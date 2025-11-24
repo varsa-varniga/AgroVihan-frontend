@@ -1,3 +1,5 @@
+// src/App.jsx
+import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 
@@ -12,17 +14,22 @@ import Carbon from "./landingpage/Carbon_credit.jsx";
 import Chat from "./landingpage/Chat.jsx";
 import Hubs from "./landingpage/Hubs.jsx";
 
-// Common layout
-import Layout from "./layout/Layout.jsx";
+// Authentication
+import AuthSystem from "./authentication/AuthSystem.jsx";
+import GLogin from "./authentication/GLogin.jsx";
+import RoleSelection from "./authentication/RoleSelection.jsx";
+import SprouterDashboard from "./authentication/SprouterDashboard.jsx";
+import CultivatorDashboard from "./authentication/CultivatorDashboard.jsx";
 
-// Role-based simple components (you can replace these later with dashboards)
-import UserRoles from "./UserRole.jsx";
+// Layout
+import Layout from "./layout/Layout.jsx";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Layout for public pages (with Navbar/Footer) */}
+
+        {/* PUBLIC PAGES */}
         <Route element={<Layout />}>
           <Route path="/" element={<HeroPage />} />
           <Route
@@ -42,14 +49,15 @@ function App() {
           <Route path="/about" element={<AboutUs />} />
         </Route>
 
-        {/* ===== User Role Pages ===== */}
-        <Route path="/sprouter/*" element={<UserRoles />} />
-        <Route path="/cultivator/*" element={<UserRoles />} />
-        <Route path="/consumer/*" element={<UserRoles />} />
-        <Route path="/carbon_buyer/*" element={<UserRoles />} />
-        <Route path="/hub_employee/*" element={<UserRoles />} />
-        <Route path="/rental_provider/*" element={<UserRoles />} />
-        <Route path="/seller/*" element={<UserRoles />} />
+        {/* AUTH */}
+        <Route path="/login" element={<AuthSystem />} />
+        <Route path="/glogin" element={<GLogin />} />
+        <Route path="/select-role" element={<RoleSelection />} />
+
+        {/* DASHBOARDS */}
+        <Route path="/sprouter" element={<SprouterDashboard />} />
+        <Route path="/sprouter" element={<CultivatorDashboard />} />
+
       </Routes>
     </BrowserRouter>
   );
