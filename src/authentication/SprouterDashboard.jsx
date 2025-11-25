@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { User, MapPin, Sprout, DollarSign, Award, ChevronRight, Menu, X, BookOpen, Brain, Wallet, Home, Cpu, Users, ShoppingBag, Leaf, FileText, LogOut, Check, ArrowRight, AlertCircle, Edit, Save, ArrowLeft } from "lucide-react";
 
 // Hardcoded API URL - remove process.env completely
@@ -36,6 +37,7 @@ const api = {
 };
 
 const SprouterProfileSystem = () => {
+  const navigate = useNavigate();
   const [currentView, setCurrentView] = useState('profile');
   const [currentStep, setCurrentStep] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -255,10 +257,16 @@ const SprouterProfileSystem = () => {
     });
   };
 
-  const handleFeatureClick = (featureId) => {
-    setActiveFeature(featureId);
-    setIsEditing(false);
-  };
+const handleFeatureClick = (featureId) => {
+  setActiveFeature(featureId);
+  setIsEditing(false);
+  
+  // Move the navigation logic inside the function
+  if (featureId === 'land') {
+    navigate('/land-leasing');
+  }
+};
+
 
   const handleEditProfile = () => {
     setEditProfileData({...profileData});
@@ -305,6 +313,7 @@ const SprouterProfileSystem = () => {
           right: '32px',
           display: 'flex',
           alignItems: 'center',
+
           gap: '8px',
           padding: '8px 16px',
           border: '1px solid #d1d5db',
