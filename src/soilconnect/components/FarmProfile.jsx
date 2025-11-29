@@ -1,17 +1,154 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const FarmProfile = () => {
-  const [badges, setBadges] = useState({
-    organic: true,
-    waterSaving: true,
-    ecoFriendly: true,
-    zeroPesticide: false
+  const [formData, setFormData] = useState({
+    userId: 'user123', // You can get this from user context or props
+    farmName: '',
+    location: '',
+    cropsGrown: '',
+    averageYield: '',
+    badges: {
+      organic: false,
+      waterSaving: false,
+      ecoFriendly: false,
+      zeroPesticide: false
+    },
+    gpsLocation: {
+      latitude: '',
+      longitude: ''
+    }
   });
+  
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+  const [profileExists, setProfileExists] = useState(false);
 
-  const handleBadgeChange = (badge) => {
-    setBadges({ ...badges, [badge]: !badges[badge] });
+  // Load farm profile on component mount
+  useEffect(() => {
+    loadFarmProfile();
+  }, []);
+
+  const loadFarmProfile = async () => {
+    try {
+      setLoading(true);
+      
+      const response = await axios.get(`http://localhost:5000/api/farm-profile/${formData.userId}`);
+
+      if (response.data.success) {
+        const profile = response.data.data;
+        setFormData({
+          ...formData,
+          farmName: profile.farmName || '',
+          location: profile.location || '',
+          cropsGrown: Array.isArray(profile.cropsGrown) ? profile.cropsGrown.join(', ') : profile.cropsGrown || '',
+          averageYield: profile.averageYield || '',
+          badges: profile.badges || {
+            organic: false,
+            waterSaving: false,
+            ecoFriendly: false,
+            zeroPesticide: false
+          },
+          gpsLocation: profile.gpsLocation || {
+            latitude: '',
+            longitude: ''
+          }
+        });
+        setProfileExists(true);
+        setMessage('Farm profile loaded successfully!');
+      }
+    } catch (error) {
+      if (error.response?.status === 404) {
+        setMessage('No farm profile found. Create a new one.');
+        setProfileExists(false);
+      } else {
+        console.error('Error loading farm profile:', error);
+        setMessage('Error loading farm profile');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleBadgeChange = (badge) => {
+    setFormData(prev => ({
+      ...prev,
+      badges: {
+        ...prev.badges,
+        [badge]: !prev.badges[badge]
+      }
+    }));
+  };
+
+  const handleGPSChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      gpsLocation: {
+        ...prev.gpsLocation,
+        [field]: value
+      }
+    }));
+  };
+
+  const handleSaveProfile = async () => {
+    try {
+      setLoading(true);
+      setMessage('');
+      
+      const response = await axios.post('http://localhost:5000/api/farm-profile', formData);
+
+      if (response.data.success) {
+        setMessage(response.data.message);
+        setProfileExists(true);
+        console.log('✅ Farm profile saved:', response.data.data);
+      }
+    } catch (error) {
+      console.error('❌ Error saving farm profile:', error);
+      setMessage(error.response?.data?.message || 'Error saving farm profile');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFileUpload = async (event) => {
+    const files = event.target.files;
+    if (files.length > 0) {
+      const uploadFormData = new FormData();
+      for (let i = 0; i < files.length; i++) {
+        uploadFormData.append('photos', files[i]);
+      }
+      uploadFormData.append('userId', formData.userId);
+      
+      try {
+        setLoading(true);
+        
+        const response = await axios.post('http://localhost:5000/api/farm-profile/upload', uploadFormData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+
+        if (response.data.success) {
+          setMessage('Photos uploaded successfully!');
+          console.log('✅ Uploaded photos:', response.data.photos);
+        }
+      } catch (error) {
+        console.error('❌ Error uploading photos:', error);
+        setMessage(error.response?.data?.message || 'Error uploading photos');
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  // Your existing styles object remains the same...
   const styles = {
     container: {
       padding: '16px',
@@ -124,7 +261,7 @@ const FarmProfile = () => {
       marginTop: '4px'
     },
     badge: {
-      backgroundColor: '#22c55e',
+      backgroundColor: profileExists ? '#22c55e' : '#f59e0b',
       color: 'white',
       padding: '6px 16px',
       borderRadius: '9999px',
@@ -226,8 +363,39 @@ const FarmProfile = () => {
       border: 'none',
       cursor: 'pointer',
       transition: 'background-color 0.2s'
+    },
+    message: {
+      padding: '12px',
+      borderRadius: '8px',
+      marginBottom: '16px',
+      textAlign: 'center',
+      backgroundColor: message.includes('Error') ? '#fef2f2' : '#f0fdf4',
+      color: message.includes('Error') ? '#dc2626' : '#16a34a',
+      border: `1px solid ${message.includes('Error') ? '#fecaca' : '#bbf7d0'}`
+    },
+    userIdInput: {
+      width: '100%',
+      padding: '12px 16px',
+      fontSize: '16px',
+      borderRadius: '8px',
+      border: '1px solid #d1d5db',
+      outline: 'none',
+      marginBottom: '16px',
+      boxSizing: 'border-box'
     }
   };
+
+  if (loading) {
+    return (
+      <div style={styles.container}>
+        <div style={styles.card}>
+          <div style={{ textAlign: 'center', padding: '40px' }}>
+            <p>Loading farm profile...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div style={styles.container}>
@@ -240,6 +408,25 @@ const FarmProfile = () => {
           <h1 style={styles.title}>Farm Profile & Verification</h1>
         </div>
 
+        {/* Message Display */}
+        {message && (
+          <div style={styles.message}>
+            {message}
+          </div>
+        )}
+
+        {/* User ID Input */}
+        <div style={styles.fieldGroup}>
+          <label style={styles.label}>User ID</label>
+          <input
+            type="text"
+            placeholder="Enter your user ID"
+            style={styles.userIdInput}
+            value={formData.userId}
+            onChange={(e) => handleInputChange('userId', e.target.value)}
+          />
+        </div>
+
         {/* Form Section */}
         <div style={styles.formSection}>
           {/* Farm Name */}
@@ -249,6 +436,8 @@ const FarmProfile = () => {
               type="text"
               placeholder="Green Valley Organic Farm"
               style={styles.input}
+              value={formData.farmName}
+              onChange={(e) => handleInputChange('farmName', e.target.value)}
               onFocus={(e) => {
                 e.target.style.borderColor = '#22c55e';
                 e.target.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.1)';
@@ -267,6 +456,8 @@ const FarmProfile = () => {
               type="text"
               placeholder="Coimbatore, Tamil Nadu"
               style={styles.input}
+              value={formData.location}
+              onChange={(e) => handleInputChange('location', e.target.value)}
               onFocus={(e) => {
                 e.target.style.borderColor = '#22c55e';
                 e.target.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.1)';
@@ -285,6 +476,8 @@ const FarmProfile = () => {
               type="text"
               placeholder="Rice, Turmeric, Vegetables"
               style={styles.input}
+              value={formData.cropsGrown}
+              onChange={(e) => handleInputChange('cropsGrown', e.target.value)}
               onFocus={(e) => {
                 e.target.style.borderColor = '#22c55e';
                 e.target.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.1)';
@@ -303,6 +496,8 @@ const FarmProfile = () => {
               type="number"
               placeholder="2.5"
               style={styles.input}
+              value={formData.averageYield}
+              onChange={(e) => handleInputChange('averageYield', e.target.value)}
               onFocus={(e) => {
                 e.target.style.borderColor = '#22c55e';
                 e.target.style.boxShadow = '0 0 0 3px rgba(34, 197, 94, 0.1)';
@@ -319,6 +514,7 @@ const FarmProfile = () => {
             <label style={styles.label}>Farm Photos</label>
             <div 
               style={styles.uploadBox}
+              onClick={() => document.getElementById('fileInput').click()}
               onMouseEnter={(e) => {
                 e.currentTarget.style.borderColor = '#22c55e';
                 e.currentTarget.style.backgroundColor = '#f0fdf4';
@@ -333,6 +529,14 @@ const FarmProfile = () => {
               </svg>
               <p style={styles.uploadText}>Click to upload or drag and drop</p>
               <p style={styles.uploadSubtext}>PNG, JPG up to 10MB</p>
+              <input
+                id="fileInput"
+                type="file"
+                multiple
+                accept="image/*"
+                style={{ display: 'none' }}
+                onChange={handleFileUpload}
+              />
             </div>
           </div>
         </div>
@@ -346,10 +550,14 @@ const FarmProfile = () => {
               </svg>
               <div>
                 <h3 style={styles.verificationTitle}>Verification Status</h3>
-                <p style={styles.verificationText}>Your farm is verified</p>
+                <p style={styles.verificationText}>
+                  {profileExists ? 'Your farm profile is saved' : 'Create your farm profile to get verified'}
+                </p>
               </div>
             </div>
-            <span style={styles.badge}>VERIFIED</span>
+            <span style={styles.badge}>
+              {profileExists ? 'SAVED' : 'NOT CREATED'}
+            </span>
           </div>
         </div>
 
@@ -360,7 +568,7 @@ const FarmProfile = () => {
             <label style={styles.checkboxLabel}>
               <input
                 type="checkbox"
-                checked={badges.organic}
+                checked={formData.badges.organic}
                 onChange={() => handleBadgeChange('organic')}
                 style={styles.checkbox}
               />
@@ -371,7 +579,7 @@ const FarmProfile = () => {
             <label style={styles.checkboxLabel}>
               <input
                 type="checkbox"
-                checked={badges.waterSaving}
+                checked={formData.badges.waterSaving}
                 onChange={() => handleBadgeChange('waterSaving')}
                 style={styles.checkbox}
               />
@@ -382,7 +590,7 @@ const FarmProfile = () => {
             <label style={styles.checkboxLabel}>
               <input
                 type="checkbox"
-                checked={badges.ecoFriendly}
+                checked={formData.badges.ecoFriendly}
                 onChange={() => handleBadgeChange('ecoFriendly')}
                 style={styles.checkbox}
               />
@@ -393,7 +601,7 @@ const FarmProfile = () => {
             <label style={styles.checkboxLabel}>
               <input
                 type="checkbox"
-                checked={badges.zeroPesticide}
+                checked={formData.badges.zeroPesticide}
                 onChange={() => handleBadgeChange('zeroPesticide')}
                 style={styles.checkbox}
               />
@@ -411,7 +619,28 @@ const FarmProfile = () => {
             <h3 style={styles.sectionTitle}>GPS Location</h3>
           </div>
           <div style={styles.mapPreview}>
-            <p style={styles.mapText}>Map Preview: 11.0168°N, 76.9558°E</p>
+            <p style={styles.mapText}>
+              {formData.gpsLocation.latitude && formData.gpsLocation.longitude 
+                ? `Map Preview: ${formData.gpsLocation.latitude}°N, ${formData.gpsLocation.longitude}°E`
+                : 'No GPS location set'
+              }
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: '12px', marginBottom: '16px' }}>
+            <input
+              type="text"
+              placeholder="Latitude"
+              style={{...styles.input, flex: 1}}
+              value={formData.gpsLocation.latitude}
+              onChange={(e) => handleGPSChange('latitude', e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Longitude"
+              style={{...styles.input, flex: 1}}
+              value={formData.gpsLocation.longitude}
+              onChange={(e) => handleGPSChange('longitude', e.target.value)}
+            />
           </div>
           <button
             style={styles.mapButton}
@@ -428,15 +657,18 @@ const FarmProfile = () => {
             style={styles.cancelButton}
             onMouseEnter={(e) => e.target.style.backgroundColor = '#f9fafb'}
             onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
+            onClick={loadFarmProfile}
           >
-            Cancel
+            Reload
           </button>
           <button
             style={styles.saveButton}
             onMouseEnter={(e) => e.target.style.backgroundColor = '#16a34a'}
             onMouseLeave={(e) => e.target.style.backgroundColor = '#22c55e'}
+            onClick={handleSaveProfile}
+            disabled={loading}
           >
-            Save Profile
+            {loading ? 'Saving...' : (profileExists ? 'Update Profile' : 'Save Profile')}
           </button>
         </div>
       </div>
