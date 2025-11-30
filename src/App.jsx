@@ -39,6 +39,9 @@ import Ecom from "./ecommerce/Ecom.jsx";
 // Carbon Credit
 import FarmerCarbonCreditCalculator from "./carboncredit/CarbonCreditMonetization.jsx";
 
+// Learning Path - Add this import
+import LearningPathApp from "./learningpathcomponents/App.jsx";
+
 // Layout
 import Layout from "./layout/Layout.jsx";
 
@@ -78,7 +81,7 @@ function App() {
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            {/* PUBLIC PAGES */}
+            {/* PUBLIC ROUTES WITH NAVBAR & FOOTER */}
             <Route element={<Layout />}>
               <Route path="/" element={<HeroPage />} />
               <Route
@@ -96,26 +99,22 @@ function App() {
                 }
               />
               <Route path="/about" element={<AboutUs />} />
+              {/* REMOVE carbon-credit and learning-path from here */}
             </Route>
 
-            {/* AUTH */}
-            <Route path="/login" element={<AuthSystem />} />
-            <Route path="/glogin" element={<GLogin />} />
-            <Route path="/select-role" element={<RoleSelection />} />
+            {/* FEATURE ROUTES WITHOUT NAVBAR */}
+            <Route
+              path="/carbon-credit"
+              element={<FarmerCarbonCreditCalculator />}
+            />
+            <Route path="/learning-path" element={<LearningPathApp />} />
 
-            {/* DASHBOARDS */}
-            <Route path="/sprouter" element={<SprouterDashboard />} />
-            <Route path="/cultivator" element={<CultivatorDashboard />} />
-
-            {/* LAND LEASING */}
+            {/* OTHER FEATURE ROUTES WITHOUT NAVBAR */}
             <Route path="/land-leasing" element={<LandHome />} />
             <Route path="/list-land" element={<ListYourLand />} />
             <Route path="/file-explorer" element={<FileExplorerDemo />} />
             <Route path="/explore" element={<Explore />} />
-
-            {/* SOIL CONNECT */}
             <Route path="/soil-connect" element={<SoilConnect />} />
-
             <Route path="/ecom" element={<Ecom />} />
 
             {/* POST HARVEST HUB ROUTES */}
@@ -129,19 +128,18 @@ function App() {
 
             {/* CARBON CREDIT */}
             <Route path="/carbon-credit" element={<FarmerCarbonCreditCalculator />} />
+            {/* AUTH ROUTES WITHOUT NAVBAR */}
+            <Route path="/login" element={<AuthSystem />} />
+            <Route path="/glogin" element={<GLogin />} />
+            <Route path="/select-role" element={<RoleSelection />} />
 
-            {/* DASHBOARD NESTED */}
-            <Route path="/dashboard" element={<DashboardHome />}>
-              <Route index element={<MyLease />} />
-              <Route path="saved" element={<SavedLand />} />
-              <Route path="documents" element={<Document />} />
-            </Route>
+            {/* DASHBOARD ROUTES WITHOUT NAVBAR */}
+            <Route path="/sprouter" element={<SprouterDashboard />} />
+            <Route path="/cultivator" element={<CultivatorDashboard />} />
 
-            <Route path="/view-agreement" element={<ViewAgreement />} />
-
-            {/* CROPCIRCLE ROUTES */}
+            {/* CROPCIRCLE ROUTES WITHOUT NAVBAR */}
             <Route path="/cropcircle" element={<AuthSystem />} />
-
+            <Route path="/cropcircle/login" element={<AuthSystem />} />
             <Route path="/cropcircle/select-crop" element={<SelectCrop />} />
 
             <Route
