@@ -42,7 +42,7 @@ import FarmerCarbonCreditCalculator from "./carboncredit/CarbonCreditMonetizatio
 // Learning Path
 import LearningPathApp from "./learningpathcomponents/App.jsx";
 
-// Smart Farming - ADD THIS IMPORT
+// Smart Farming
 import SmartFarmingAssistant from "./farmingcalender/SmartFarmingDashboard.jsx";
 
 // Layout
@@ -70,6 +70,9 @@ import Aggregator from "./postharvest/Aggregator.jsx";
 
 // Auth Context
 import { AuthProvider } from "./context/AuthContext";
+
+// AgroPulse
+import AgroPulse from "./agropulse/Farm_readinessAI.jsx";
 
 // Subsidies Components
 import SubsidiesDashboard from "./subsidies/SubsidiesDahboard.jsx";
@@ -125,18 +128,27 @@ function App() {
             />
             <Route path="/learning-path" element={<LearningPathApp />} />
 
-            {/* SMART FARMING ROUTE - ADD THIS */}
+            {/* SMART FARMING ROUTE - ADDED */}
             <Route path="/smart-farming" element={<SmartFarmingAssistant />} />
 
-            {/* OTHER FEATURE ROUTES WITHOUT NAVBAR */}
+            {/* DASHBOARDS */}
+            <Route path="/sprouter" element={<SprouterDashboard />} />
+            <Route path="/cultivator" element={<CultivatorDashboard />} />
+
+            {/* AGROPULSE */}
+            <Route path="/ai" element={<AgroPulse />} />
+
+            {/* LAND LEASING */}
             <Route path="/land-leasing" element={<LandHome />} />
             <Route path="/list-land" element={<ListYourLand />} />
             <Route path="/file-explorer" element={<FileExplorerDemo />} />
             <Route path="/explore" element={<Explore />} />
+
+            {/* SOIL CONNECT & ECOM */}
             <Route path="/soil-connect" element={<SoilConnect />} />
             <Route path="/ecom" element={<Ecom />} />
 
-            {/* POST HARVEST HUB ROUTES */}
+            {/* POST HARVEST HUB */}
             <Route path="/postharvest" element={<PostHome />} />
             <Route path="/postharvest/alerts" element={<Alerts />} />
             <Route path="/postharvest/mandi-prices" element={<MandiPrice />} />
@@ -145,25 +157,18 @@ function App() {
               element={<NearbyTransport />}
             />
             <Route path="/postharvest/grains" element={<GrainType />} />
-            <Route path="/postharvest/Aggregator" element={<Aggregator />} />
+            <Route path="/postharvest/aggregator" element={<Aggregator />} />
 
-            {/* CARBON CREDIT */}
-            <Route
-              path="/carbon-credit"
-              element={<FarmerCarbonCreditCalculator />}
-            />
-
-            {/* AUTH ROUTES WITHOUT NAVBAR */}
+            {/* AUTH ROUTES */}
             <Route path="/login" element={<AuthSystem />} />
             <Route path="/glogin" element={<GLogin />} />
             <Route path="/select-role" element={<RoleSelection />} />
 
-            {/* DASHBOARD ROUTES WITHOUT NAVBAR */}
-            <Route path="/sprouter" element={<SprouterDashboard />} />
-            <Route path="/cultivator" element={<CultivatorDashboard />} />
-
-            {/* CROPCIRCLE ROUTES WITHOUT NAVBAR */}
-            <Route path="/cropcircle" element={<AuthSystem />} />
+            {/* CROPCIRCLE ROUTES */}
+            <Route
+              path="/cropcircle"
+              element={<Navigate to="/cropcircle/login" replace />}
+            />
             <Route path="/cropcircle/login" element={<AuthSystem />} />
             <Route path="/cropcircle/select-crop" element={<SelectCrop />} />
 
@@ -177,7 +182,6 @@ function App() {
                 </ProtectedRoute>
               }
             />
-
             <Route
               path="/cropcircle/notifications"
               element={
@@ -188,7 +192,6 @@ function App() {
                 </ProtectedRoute>
               }
             />
-
             <Route
               path="/cropcircle/profile"
               element={
@@ -199,7 +202,6 @@ function App() {
                 </ProtectedRoute>
               }
             />
-
             <Route
               path="/cropcircle/profile/:userId/feed"
               element={
@@ -220,7 +222,6 @@ function App() {
                 </SubsidiesAuthWrapper>
               }
             />
-
             <Route
               path="/schemes"
               element={
@@ -229,7 +230,6 @@ function App() {
                 </SubsidiesAuthWrapper>
               }
             />
-
             <Route
               path="/applications"
               element={
@@ -238,7 +238,6 @@ function App() {
                 </SubsidiesAuthWrapper>
               }
             />
-
             <Route
               path="/profile"
               element={
@@ -248,6 +247,7 @@ function App() {
               }
             />
 
+            {/* CATCH-ALL */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>

@@ -592,6 +592,9 @@ const SprouterProfileSystem = () => {
       navigate("/land-leasing");
       return;
     }
+    if(featureId === 'ai'){
+      navigate('/ai');
+    }
 
     if (featureId === "soil") {
       navigate("/soil-connect");
