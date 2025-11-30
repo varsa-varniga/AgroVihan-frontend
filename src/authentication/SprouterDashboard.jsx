@@ -278,11 +278,18 @@ const SprouterProfileSystem = () => {
       return;
     }
 
+if (featureId === 'posts') {
+  navigate('/postharvest');
+  return;
+}
+
     // ✅ UPDATED: CROP CIRCLE - REDIRECT TO SIGNUP PAGE
     if (featureId === 'community') {
   navigate("/cropcircle/select-crop");
   return;
 }
+
+
 
 
     // For profile, stay in dashboard but show profile view

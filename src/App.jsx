@@ -54,6 +54,14 @@ import UserFeedPage from "./cropcircle/pages/UserFeedPage";
 import SelectCrop from "./cropcircle/pages/SelectCrop.jsx";
 import NotificationsPage from "./cropcircle/pages/NotificationsPage";
 
+// Post Harvest
+// Post Harvest
+import PostHome from "./postharvest/PostHome.jsx"; // Add this
+import Alerts from "./postharvest/Alerts.jsx";
+import MandiPrice from "./postharvest/MandiPrice.jsx";
+import NearbyTransport from "./postharvest/NearbyTransport.jsx";
+import GrainType from "./postharvest/GrainType.jsx";
+import Aggregator from "./postharvest/Aggregator.jsx";
 // Auth Context
 import { AuthProvider } from "./context/AuthContext";
 
@@ -109,6 +117,15 @@ function App() {
             <Route path="/soil-connect" element={<SoilConnect />} />
 
             <Route path="/ecom" element={<Ecom />} />
+
+            {/* POST HARVEST HUB ROUTES */}
+         
+<Route path="/postharvest" element={<PostHome />} />
+<Route path="/postharvest/alerts" element={<Alerts />} />
+<Route path="/postharvest/mandi-prices" element={<MandiPrice />} />
+<Route path="/postharvest/transport" element={<NearbyTransport />} />
+<Route path="/postharvest/grains" element={<GrainType />} />
+<Route path="/postharvest/Aggregator" element={<Aggregator />} />
 
             {/* CARBON CREDIT */}
             <Route path="/carbon-credit" element={<FarmerCarbonCreditCalculator />} />
