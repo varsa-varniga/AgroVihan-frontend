@@ -27,6 +27,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import App from "../learningpathcomponents/App";
+import SmartFarmingDashboard from "../farmingcalender/SmartFarmingDashboard";
 
 // Hardcoded API URL - remove process.env completely
 const API_BASE_URL = "http://localhost:5000/api";
@@ -602,18 +603,16 @@ const SprouterProfileSystem = () => {
       return;
     }
 
-if (featureId === 'posts') {
-  navigate('/postharvest');
-  return;
-}
+    if (featureId === "posts") {
+      navigate("/postharvest");
+      return;
+    }
 
     // ✅ UPDATED: CROP CIRCLE - REDIRECT TO SIGNUP PAGE
     if (featureId === "community") {
       navigate("/cropcircle/select-crop");
       return;
     }
-
-
 
     // For profile, stay in dashboard but show profile view
     if (featureId === "profile") {
@@ -626,6 +625,12 @@ if (featureId === 'posts') {
       return;
     }
 
+    if (featureId === "smart") {
+      // Navigate to Smart Farming route
+      navigate("/smart-farming");
+      return;
+    }
+
     // Handle navigation for different features
     if (featureId === "schemes") {
       navigate("/schemes");
@@ -634,11 +639,6 @@ if (featureId === 'posts') {
 
     if (featureId === "applications") {
       navigate("/applications");
-      return;
-    }
-
-    if (featureId === "profile") {
-      navigate("/profile");
       return;
     }
 
@@ -1633,11 +1633,19 @@ if (featureId === 'posts') {
         <LearningPathWrapper
           user={profileData}
           onBackToDashboard={() => {
-            setActiveFeature("dashboard");
+            setActiveFeature("sprouter");
             setSelectedLanguage(null);
           }}
         />
       </div>
+    );
+  }
+
+  if (activeFeature === "smart-farming") {
+    return (
+      <SmartFarmingDashboard
+        onBackToDashboard={() => setActiveFeature("dashboard")}
+      />
     );
   }
 

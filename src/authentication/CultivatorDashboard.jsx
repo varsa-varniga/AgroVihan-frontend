@@ -25,6 +25,7 @@ import {
 
 // Import the LearningPathWrapper component (you'll need to create this or adjust the path)
 import LearningPathWrapper from "../learningpathcomponents/App";
+import SmartFarmingDashboard from "../farmingcalender/SmartFarmingDashboard";
 
 const CultivatorDashboard = () => {
   const navigate = useNavigate();
@@ -285,6 +286,12 @@ const CultivatorDashboard = () => {
 
     if (featureId === "financial") {
       navigate("/financial-empower");
+      return;
+    }
+
+    if (featureId === "smart") {
+      // Navigate to Smart Farming
+      setActiveFeature("smart-farming");
       return;
     }
 
@@ -844,6 +851,14 @@ const CultivatorDashboard = () => {
           }}
         />
       </div>
+    );
+  }
+
+  if (activeFeature === "smart-farming") {
+    return (
+      <SmartFarmingDashboard
+        onBackToDashboard={() => setActiveFeature("dashboard")}
+      />
     );
   }
 

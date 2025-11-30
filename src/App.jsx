@@ -42,6 +42,9 @@ import FarmerCarbonCreditCalculator from "./carboncredit/CarbonCreditMonetizatio
 // Learning Path
 import LearningPathApp from "./learningpathcomponents/App.jsx";
 
+// Smart Farming - ADD THIS IMPORT
+import SmartFarmingAssistant from "./farmingcalender/SmartFarmingDashboard.jsx";
+
 // Layout
 import Layout from "./layout/Layout.jsx";
 
@@ -121,6 +124,9 @@ function App() {
               element={<FarmerCarbonCreditCalculator />}
             />
             <Route path="/learning-path" element={<LearningPathApp />} />
+
+            {/* SMART FARMING ROUTE - ADD THIS */}
+            <Route path="/smart-farming" element={<SmartFarmingAssistant />} />
 
             {/* OTHER FEATURE ROUTES WITHOUT NAVBAR */}
             <Route path="/land-leasing" element={<LandHome />} />
