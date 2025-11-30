@@ -491,7 +491,7 @@ const SprouterProfileSystem = () => {
       console.log("incomeRange:", profileData.incomeRange);
       console.log("experience:", profileData.experience);
 
-      const response = await fetch(`${API_BASE_URL}/sprouter/profile`, {
+      const response = await fetch(`${API_BASE_URL}/sprouters/profile`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -1,5 +1,6 @@
 // src/dashboard/Documents.jsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Card,
   CardContent,
@@ -10,6 +11,7 @@ import {
 import DescriptionOutlinedIcon from '@mui/icons-material/DescriptionOutlined';
 
 const Documents = () => {
+  const navigate = useNavigate();
   return (
     <>
       <Typography 
@@ -68,32 +70,31 @@ const Documents = () => {
           </Box>
 
           {/* View PDF Button */}
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <Button
-              startIcon={<DescriptionOutlinedIcon />}
-              variant="outlined"
-              sx={{ 
-                color: '#212121',
-                textTransform: 'none',
-                fontWeight: 600,
-                fontSize: '14px',
-                border: '1px solid #e0e0e0',
-                borderRadius: '8px',
-                padding: '10px 24px',
-                transition: 'all 0.3s ease',
-                '&:hover': {
-                  bgcolor: '#f59e0b',
-                  color: 'white',
-                  border: '1px solid #f59e0b',
-                  '& .MuiSvgIcon-root': {
-                    color: 'white'
-                  }
-                }
-              }}
-            >
-              View PDF
-            </Button>
-          </Box>
+<Button
+  startIcon={<DescriptionOutlinedIcon />}
+  onClick={() => navigate('/view-agreement')}  // ✅ Add navigation
+  variant="outlined"
+  sx={{ 
+    color: '#212121',
+    textTransform: 'none',
+    fontWeight: 600,
+    fontSize: '14px',
+    border: '1px solid #e0e0e0',
+    borderRadius: '8px',
+    padding: '10px 24px',
+    transition: 'all 0.3s ease',
+    '&:hover': {
+      bgcolor: '#f59e0b',
+      color: 'white',
+      border: '1px solid #f59e0b',
+      '& .MuiSvgIcon-root': {
+        color: 'white'
+      }
+    }
+  }}
+>
+  View PDF
+</Button>
         </CardContent>
       </Card>
     </>

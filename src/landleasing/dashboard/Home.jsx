@@ -113,7 +113,7 @@ const DashboardHome = () => {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <IconButton 
               size="small" 
-              onClick={() => navigate('/')}
+              onClick={() => navigate('/land-leasing')}
               sx={{ color: '#424242' }}
             >
               <ArrowBackIcon />

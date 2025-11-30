@@ -15,7 +15,7 @@ const Ecom = () => {
   const [orderComplete, setOrderComplete] = useState(false);
   const [orderDetails, setOrderDetails] = useState(null);
 
-  const topFertilizers = [
+const topFertilizers = [
     {
       id: 1,
       name: 'Premium Organic Compost',
@@ -23,7 +23,7 @@ const Ecom = () => {
       originalPrice: '₹624',
       rating: 4.8,
       reviews: 234,
-      image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400&h=300&fit=crop',
+      image: '/src/assets/ecom/compost.png',
       discount: '20% OFF',
       tag: 'Bestseller',
       tagColor: '#ff9800'
@@ -35,7 +35,7 @@ const Ecom = () => {
       originalPrice: '₹705',
       rating: 4.9,
       reviews: 189,
-      image: 'https://images.unsplash.com/photo-1592419044706-39796d40f98c?w=400&h=300&fit=crop',
+      image: '/src/assets/ecom/vermicompost.png',
       discount: '15% OFF',
       tag: 'Top Rated',
       tagColor: '#9c27b0'
@@ -47,7 +47,7 @@ const Ecom = () => {
       originalPrice: '₹599',
       rating: 4.7,
       reviews: 156,
-      image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=400&h=300&fit=crop',
+      image: '/src/assets/ecom/neem-cake.png',
       discount: '25% OFF',
       tag: 'Hot Deal',
       tagColor: '#f44336'
@@ -59,7 +59,7 @@ const Ecom = () => {
       originalPrice: '₹777',
       rating: 4.6,
       reviews: 198,
-      image: 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=400&h=300&fit=crop',
+      image: '/src/assets/ecom/npk.png',
       discount: '10% OFF',
       tag: 'New Arrival',
       tagColor: '#2196f3'
@@ -71,7 +71,7 @@ const Ecom = () => {
       originalPrice: '₹899',
       rating: 4.8,
       reviews: 167,
-      image: 'https://images.unsplash.com/photo-1592419044706-39796d40f98c?w=400&h=300&fit=crop',
+      image: '/src/assets/ecom/seaweed.png',
       discount: '11% OFF',
       tag: 'Popular',
       tagColor: '#4caf50'
@@ -83,7 +83,7 @@ const Ecom = () => {
       originalPrice: '₹449',
       rating: 4.5,
       reviews: 143,
-      image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=400&h=300&fit=crop',
+      image: '/src/assets/ecom/bone-meal.png',
       discount: '22% OFF',
       tag: 'Value Pick',
       tagColor: '#ff9800'
@@ -95,7 +95,7 @@ const Ecom = () => {
       originalPrice: '₹399',
       rating: 4.4,
       reviews: 98,
-      image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400&h=300&fit=crop',
+      image: '/src/assets/ecom//mustard-cake.png',
       discount: '25% OFF',
       tag: 'Economy',
       tagColor: '#795548'
@@ -107,7 +107,7 @@ const Ecom = () => {
       originalPrice: '₹249',
       rating: 4.3,
       reviews: 87,
-      image: 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=400&h=300&fit=crop',
+      image: '/src/assets/ecom/poultry-manure.png',
       discount: '20% OFF',
       tag: 'Budget',
       tagColor: '#607d8b'
@@ -119,7 +119,7 @@ const Ecom = () => {
       originalPrice: '₹1099',
       rating: 4.7,
       reviews: 134,
-      image: 'https://images.unsplash.com/photo-1592419044706-39796d40f98c?w=400&h=300&fit=crop',
+      image: '/src/assets/ecom/fish-meal.png',
       discount: '18% OFF',
       tag: 'Premium',
       tagColor: '#9c27b0'
@@ -131,7 +131,7 @@ const Ecom = () => {
       originalPrice: '₹749',
       rating: 4.6,
       reviews: 76,
-      image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=400&h=300&fit=crop',
+      image: '/src/assets/ecom/rock-phosphate.png',
       discount: '20% OFF',
       tag: 'Special',
       tagColor: '#2196f3'
@@ -143,7 +143,7 @@ const Ecom = () => {
       originalPrice: '₹199',
       rating: 4.2,
       reviews: 287,
-      image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400&h=300&fit=crop',
+      image: '/src/assets/ecom/cow-dung.png',
       discount: '25% OFF',
       tag: 'Traditional',
       tagColor: '#795548'
@@ -155,7 +155,7 @@ const Ecom = () => {
       originalPrice: '₹1599',
       rating: 4.9,
       reviews: 112,
-      image: 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=400&h=300&fit=crop',
+      image: '/src/assets/ecom/micronutrient.png',
       discount: '19% OFF',
       tag: 'Advanced',
       tagColor: '#f44336'
@@ -167,7 +167,7 @@ const Ecom = () => {
       originalPrice: '₹499',
       rating: 4.5,
       reviews: 89,
-      image: 'https://images.unsplash.com/photo-1592419044706-39796d40f98c?w=400&h=300&fit=crop',
+      image: '/src/assets/ecom/compost-starter.png',
       discount: '20% OFF',
       tag: 'Essential',
       tagColor: '#4caf50'
@@ -179,7 +179,7 @@ const Ecom = () => {
       originalPrice: '₹849',
       rating: 4.7,
       reviews: 67,
-      image: 'https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=400&h=300&fit=crop',
+      image: '/src/assets/ecom/potash.png',
       discount: '18% OFF',
       tag: 'Specialized',
       tagColor: '#ff9800'
@@ -191,7 +191,7 @@ const Ecom = () => {
       originalPrice: '₹699',
       rating: 4.6,
       reviews: 94,
-      image: 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=400&h=300&fit=crop',
+      image: '/src/assets/ecom/nitrogen.png',
       discount: '21% OFF',
       tag: 'Growth',
       tagColor: '#2196f3'
@@ -203,13 +203,12 @@ const Ecom = () => {
       originalPrice: '₹1124',
       rating: 4.8,
       reviews: 156,
-      image: 'https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?w=400&h=300&fit=crop',
+      image: '/src/assets/ecom/plant-food.png',
       discount: '20% OFF',
       tag: 'All-in-One',
       tagColor: '#9c27b0'
     }
   ];
-
   const categories = [
     { name: 'Organic Fertilizers', icon: Leaf, count: 156, color: '#4caf50', bg: '#e8f5e9' },
     { name: 'Seeds & Plants', icon: Sprout, count: 234, color: '#8bc34a', bg: '#f1f8e9' },
@@ -513,7 +512,7 @@ const Ecom = () => {
     productImage: {
       width: '100%',
       height: '100%',
-      objectFit: 'cover'
+      objectFit:'contain'
     },
     badge: {
       position: 'absolute',

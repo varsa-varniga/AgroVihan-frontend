@@ -221,7 +221,7 @@ const LandHome = () => {
             {/* Back Button */}
             <button
               style={styles.backButton}
-              onClick={() => navigate(-1)}
+              onClick={() => navigate('/sprouter')}
               onMouseOver={(e) => {
                 e.currentTarget.style.backgroundColor = '#f3f4f6';
                 e.currentTarget.style.borderColor = '#d1d5db';
@@ -232,7 +232,7 @@ const LandHome = () => {
               }}
             >
               <ArrowLeft size={18} />
-              Back
+              Back 
             </button>
 
             <div style={styles.logo}>
