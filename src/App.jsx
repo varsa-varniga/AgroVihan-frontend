@@ -39,7 +39,7 @@ import Ecom from "./ecommerce/Ecom.jsx";
 // Carbon Credit
 import FarmerCarbonCreditCalculator from "./carboncredit/CarbonCreditMonetization.jsx";
 
-// Learning Path - Add this import
+// Learning Path
 import LearningPathApp from "./learningpathcomponents/App.jsx";
 
 // Layout
@@ -58,15 +58,24 @@ import SelectCrop from "./cropcircle/pages/SelectCrop.jsx";
 import NotificationsPage from "./cropcircle/pages/NotificationsPage";
 
 // Post Harvest
-// Post Harvest
-import PostHome from "./postharvest/PostHome.jsx"; // Add this
+import PostHome from "./postharvest/PostHome.jsx";
 import Alerts from "./postharvest/Alerts.jsx";
 import MandiPrice from "./postharvest/MandiPrice.jsx";
 import NearbyTransport from "./postharvest/NearbyTransport.jsx";
 import GrainType from "./postharvest/GrainType.jsx";
 import Aggregator from "./postharvest/Aggregator.jsx";
+
 // Auth Context
 import { AuthProvider } from "./context/AuthContext";
+
+// Subsidies Components
+import SubsidiesDashboard from "./subsidies/SubsidiesDahboard.jsx";
+import SchemeBrowser from "./subsidies/pages/SchemeBrowser.jsx";
+import Applications from "./subsidies/pages/Applications.jsx";
+import Profile from "./subsidies/pages/Profile.jsx";
+
+// Auth Contexts
+import { AuthProvider as SubsidiesAuthProvider } from "./subsidies/contexts/AuthContext"; // Subsidies auth
 
 const ProtectedLayout = ({ children }) => (
   <>
@@ -74,6 +83,11 @@ const ProtectedLayout = ({ children }) => (
     <BottomNav />
   </>
 );
+
+// Subsidies Auth Wrapper Component
+const SubsidiesAuthWrapper = ({ children }) => {
+  return <SubsidiesAuthProvider>{children}</SubsidiesAuthProvider>;
+};
 
 function App() {
   return (
@@ -99,7 +113,6 @@ function App() {
                 }
               />
               <Route path="/about" element={<AboutUs />} />
-              {/* REMOVE carbon-credit and learning-path from here */}
             </Route>
 
             {/* FEATURE ROUTES WITHOUT NAVBAR */}
@@ -118,16 +131,22 @@ function App() {
             <Route path="/ecom" element={<Ecom />} />
 
             {/* POST HARVEST HUB ROUTES */}
-         
-<Route path="/postharvest" element={<PostHome />} />
-<Route path="/postharvest/alerts" element={<Alerts />} />
-<Route path="/postharvest/mandi-prices" element={<MandiPrice />} />
-<Route path="/postharvest/transport" element={<NearbyTransport />} />
-<Route path="/postharvest/grains" element={<GrainType />} />
-<Route path="/postharvest/Aggregator" element={<Aggregator />} />
+            <Route path="/postharvest" element={<PostHome />} />
+            <Route path="/postharvest/alerts" element={<Alerts />} />
+            <Route path="/postharvest/mandi-prices" element={<MandiPrice />} />
+            <Route
+              path="/postharvest/transport"
+              element={<NearbyTransport />}
+            />
+            <Route path="/postharvest/grains" element={<GrainType />} />
+            <Route path="/postharvest/Aggregator" element={<Aggregator />} />
 
             {/* CARBON CREDIT */}
-            <Route path="/carbon-credit" element={<FarmerCarbonCreditCalculator />} />
+            <Route
+              path="/carbon-credit"
+              element={<FarmerCarbonCreditCalculator />}
+            />
+
             {/* AUTH ROUTES WITHOUT NAVBAR */}
             <Route path="/login" element={<AuthSystem />} />
             <Route path="/glogin" element={<GLogin />} />
@@ -183,6 +202,43 @@ function App() {
                     <UserFeedPage />
                   </ProtectedLayout>
                 </ProtectedRoute>
+              }
+            />
+
+            {/* SUBSIDIES ROUTES WITH THEIR OWN AUTH PROVIDER */}
+            <Route
+              path="/financial-empower"
+              element={
+                <SubsidiesAuthWrapper>
+                  <SubsidiesDashboard />
+                </SubsidiesAuthWrapper>
+              }
+            />
+
+            <Route
+              path="/schemes"
+              element={
+                <SubsidiesAuthWrapper>
+                  <SchemeBrowser />
+                </SubsidiesAuthWrapper>
+              }
+            />
+
+            <Route
+              path="/applications"
+              element={
+                <SubsidiesAuthWrapper>
+                  <Applications />
+                </SubsidiesAuthWrapper>
+              }
+            />
+
+            <Route
+              path="/profile"
+              element={
+                <SubsidiesAuthWrapper>
+                  <Profile />
+                </SubsidiesAuthWrapper>
               }
             />
 

@@ -203,7 +203,7 @@ const SprouterProfileSystem = () => {
       id: "financial",
       icon: Wallet,
       label: "Financial Empower",
-      desc: "Financial tools & schemes",
+      desc: "Government schemes & subsidies",
       color: "#22c55e",
     },
     {
@@ -443,27 +443,96 @@ const SprouterProfileSystem = () => {
     }
   };
 
+  // Add this helper function to your SprouterDashboard.jsx
+  const apiCall = async (endpoint, options = {}) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        headers: {
+          "Content-Type": "application/json",
+          ...options.headers,
+        },
+        ...options,
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const contentType = response.headers.get("content-type");
+      if (!contentType || !contentType.includes("application/json")) {
+        throw new Error("Server did not return JSON");
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("API call failed:", error);
+      throw error;
+    }
+  };
+
+  // Then use it like this:
   const submitProfile = async () => {
     setLoading(true);
     try {
-      const response = await api.post("/sprouters/profile", profileData);
+      console.log("📤 Submitting profile data:", profileData);
 
-      if (response.success) {
-        // Store sprouter data in localStorage
-        localStorage.setItem("sprouterData", JSON.stringify(response.sprouter));
+      // Log each field to see what might be missing
+      console.log("🔍 Field check:");
+      console.log("fullName:", profileData.fullName);
+      console.log("phone:", profileData.phone);
+      console.log("aadhaarLast4:", profileData.aadhaarLast4);
+      console.log("village:", profileData.village);
+      console.log("district:", profileData.district);
+      console.log("state:", profileData.state);
+      console.log("pincode:", profileData.pincode);
+      console.log("landSize:", profileData.landSize);
+      console.log("landType:", profileData.landType);
+      console.log("soilType:", profileData.soilType);
+      console.log("incomeRange:", profileData.incomeRange);
+      console.log("experience:", profileData.experience);
+
+      const response = await fetch(`${API_BASE_URL}/sprouter/profile`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(profileData),
+      });
+
+      console.log("📥 Response status:", response.status);
+
+      const responseText = await response.text();
+      console.log("📥 Raw response:", responseText);
+
+      if (!response.ok) {
+        throw new Error(`Server error: ${response.status} - ${responseText}`);
+      }
+
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (parseError) {
+        console.error("❌ JSON parse error:", parseError);
+        throw new Error("Server returned invalid JSON");
+      }
+
+      if (data.success) {
+        localStorage.setItem("sprouterData", JSON.stringify(data.sprouter));
         setCurrentView("dashboard");
-        console.log("Sprouter registration successful:", response);
+        console.log("✅ Sprouter registration successful:", data);
       } else {
-        throw new Error(response.message);
+        throw new Error(data.message || "Registration failed");
       }
     } catch (error) {
-      console.error("Sprouter registration failed:", error);
-      alert(error.message || "Registration failed. Please try again.");
+      console.error("❌ Sprouter registration failed:", error);
+      alert(
+        error.message ||
+          "Registration failed. Please check all required fields and try again."
+      );
     } finally {
       setLoading(false);
     }
   };
-
   const handleNext = async () => {
     if (!validateStep()) {
       return;
@@ -557,6 +626,22 @@ if (featureId === 'posts') {
       return;
     }
 
+    // Handle navigation for different features
+    if (featureId === "schemes") {
+      navigate("/schemes");
+      return;
+    }
+
+    if (featureId === "applications") {
+      navigate("/applications");
+      return;
+    }
+
+    if (featureId === "profile") {
+      navigate("/profile");
+      return;
+    }
+
     if (featureId === "community") {
       const sprouterUser = localStorage.getItem("sprouterData");
       const userData = sprouterUser ? JSON.parse(sprouterUser) : null;
@@ -584,6 +669,11 @@ if (featureId === 'posts') {
       } else {
         navigate("/cropcircle/login");
       }
+      return;
+    }
+
+    if (featureId === "financial") {
+      navigate("/financial-empower");
       return;
     }
 
