@@ -1,23 +1,73 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, Clock } from 'lucide-react';
+import axios from 'axios';
 
 const AvailabilityView = () => {
   const [selectedDate, setSelectedDate] = useState('2025-11-15');
-  const [availability, setAvailability] = useState({
-    '2025-11-15': { available: true, morning: true, afternoon: true },
-    '2025-11-16': { available: true, morning: true, afternoon: false },
-    '2025-11-20': { available: false, morning: false, afternoon: false },
-    '2025-11-22': { available: true, morning: false, afternoon: true },
-  });
+  const [availability, setAvailability] = useState({});
+  const [userId, setUserId] = useState('user123');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+
+  // Load availability data
+  useEffect(() => {
+    loadAvailability();
+  }, [userId]);
+
+  const loadAvailability = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`http://localhost:5000/api/availability/${userId}`);
+      
+      if (response.data.success) {
+        setAvailability(response.data.data);
+        setMessage('Availability loaded successfully!');
+      }
+    } catch (error) {
+      console.error('Error loading availability:', error);
+      if (error.response?.status === 404) {
+        setMessage('No availability data found');
+        setAvailability({});
+      } else {
+        setMessage('Error loading availability data');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const currentDateInfo = availability[selectedDate] || { 
     available: false, 
     morning: false, 
-    afternoon: false 
+    afternoon: false,
+    evening: false 
   };
 
-  const updateAvailability = () => {
-    alert(`Availability updated for ${selectedDate}`);
+  const updateAvailability = async () => {
+    try {
+      setLoading(true);
+      
+      const response = await axios.put(`http://localhost:5000/api/availability/${userId}`, {
+        date: selectedDate,
+        available: currentDateInfo.available,
+        timeSlots: {
+          morning: currentDateInfo.morning,
+          afternoon: currentDateInfo.afternoon,
+          evening: currentDateInfo.evening
+        }
+      });
+
+      if (response.data.success) {
+        setMessage('Availability updated successfully!');
+        // Refresh data
+        await loadAvailability();
+      }
+    } catch (error) {
+      console.error('Error updating availability:', error);
+      setMessage('Error updating availability');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const toggleAvailable = (checked) => {
@@ -27,7 +77,8 @@ const AvailabilityView = () => {
         ...prev[selectedDate],
         available: checked,
         morning: checked,
-        afternoon: checked
+        afternoon: checked,
+        evening: checked
       }
     }));
   };
@@ -41,30 +92,77 @@ const AvailabilityView = () => {
           [slot]: checked
         }
       };
-      updated[selectedDate].available = updated[selectedDate].morning || updated[selectedDate].afternoon;
+      updated[selectedDate].available = updated[selectedDate].morning || updated[selectedDate].afternoon || updated[selectedDate].evening;
       return updated;
     });
   };
 
-  const markNext7Days = () => {
-    const newAvailability = { ...availability };
-    const startDay = 15;
-    for (let i = 0; i < 7; i++) {
-      const day = startDay + i;
-      if (day <= 30) {
-        const dateKey = `2025-11-${String(day).padStart(2, '0')}`;
-        newAvailability[dateKey] = { available: true, morning: true, afternoon: true };
+  const markNext7Days = async () => {
+    try {
+      setLoading(true);
+      const availabilityData = [];
+      const startDay = 15;
+      
+      for (let i = 0; i < 7; i++) {
+        const day = startDay + i;
+        if (day <= 30) {
+          const dateKey = `2025-11-${String(day).padStart(2, '0')}`;
+          availabilityData.push({
+            date: dateKey,
+            available: true,
+            timeSlots: {
+              morning: true,
+              afternoon: true,
+              evening: true
+            }
+          });
+        }
       }
+
+      const response = await axios.post(`http://localhost:5000/api/availability/${userId}/bulk`, {
+        availabilityData
+      });
+
+      if (response.data.success) {
+        setMessage('Next 7 days marked as available!');
+        await loadAvailability();
+      }
+    } catch (error) {
+      console.error('Error bulk updating:', error);
+      setMessage('Error marking next 7 days');
+    } finally {
+      setLoading(false);
     }
-    setAvailability(newAvailability);
   };
 
-  const blockWeekend = () => {
-    const newAvailability = { ...availability };
-    ['2025-11-15', '2025-11-16', '2025-11-22', '2025-11-23', '2025-11-29', '2025-11-30'].forEach(date => {
-      newAvailability[date] = { available: false, morning: false, afternoon: false };
-    });
-    setAvailability(newAvailability);
+  const blockWeekend = async () => {
+    try {
+      setLoading(true);
+      const weekendDates = ['2025-11-15', '2025-11-16', '2025-11-22', '2025-11-23', '2025-11-29', '2025-11-30'];
+      const availabilityData = weekendDates.map(date => ({
+        date,
+        available: false,
+        timeSlots: {
+          morning: false,
+          afternoon: false,
+          evening: false
+        }
+      }));
+
+      const response = await axios.post(`http://localhost:5000/api/availability/${userId}/bulk`, {
+        availabilityData
+      });
+
+      if (response.data.success) {
+        setMessage('Weekends blocked successfully!');
+        await loadAvailability();
+      }
+    } catch (error) {
+      console.error('Error blocking weekends:', error);
+      setMessage('Error blocking weekends');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const generateCalendar = () => {
@@ -131,6 +229,22 @@ const AvailabilityView = () => {
     return days;
   };
 
+  if (loading) {
+    return (
+      <div style={{ padding: '24px 0' }}>
+        <div style={{ 
+          backgroundColor: 'white', 
+          borderRadius: '12px', 
+          boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', 
+          padding: '24px',
+          textAlign: 'center'
+        }}>
+          <p>Loading availability data...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ padding: '24px 0' }}>
       <div style={{ 
@@ -150,6 +264,37 @@ const AvailabilityView = () => {
           <Calendar style={{ width: '28px', height: '28px', marginRight: '12px', color: '#2563eb' }} />
           Availability Calendar
         </h1>
+
+        {/* User ID Input */}
+        <div style={{ marginBottom: '20px' }}>
+          <label style={{ display: 'block', marginBottom: '8px', fontWeight: '600' }}>User ID:</label>
+          <input 
+            type="text" 
+            value={userId}
+            onChange={(e) => setUserId(e.target.value)}
+            style={{ 
+              padding: '8px 12px', 
+              border: '1px solid #d1d5db', 
+              borderRadius: '6px',
+              width: '200px'
+            }}
+            placeholder="Enter user ID"
+          />
+        </div>
+
+        {/* Message Display */}
+        {message && (
+          <div style={{ 
+            padding: '12px', 
+            backgroundColor: message.includes('Error') ? '#fef2f2' : '#f0fdf4',
+            color: message.includes('Error') ? '#dc2626' : '#16a34a',
+            borderRadius: '8px',
+            marginBottom: '16px',
+            border: `1px solid ${message.includes('Error') ? '#fecaca' : '#bbf7d0'}`
+          }}>
+            {message}
+          </div>
+        )}
         
         <div style={{ 
           display: 'grid', 
@@ -306,22 +451,23 @@ const AvailabilityView = () => {
                   
                   <button 
                     onClick={updateAvailability}
+                    disabled={loading}
                     style={{
                       width: '100%',
                       padding: '8px 16px',
-                      backgroundColor: '#16a34a',
+                      backgroundColor: loading ? '#6b7280' : '#16a34a',
                       color: 'white',
                       borderRadius: '8px',
                       border: 'none',
-                      cursor: 'pointer',
+                      cursor: loading ? 'not-allowed' : 'pointer',
                       marginTop: '12px',
                       fontSize: '14px',
                       fontWeight: '500'
                     }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#15803d'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = '#16a34a'}
+                    onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = '#15803d')}
+                    onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = '#16a34a')}
                   >
-                    Update Availability
+                    {loading ? 'Updating...' : 'Update Availability'}
                   </button>
                 </div>
               </div>
@@ -340,6 +486,7 @@ const AvailabilityView = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                   <button 
                     onClick={markNext7Days}
+                    disabled={loading}
                     style={{
                       width: '100%',
                       padding: '8px 12px',
@@ -347,15 +494,16 @@ const AvailabilityView = () => {
                       border: '1px solid #d1d5db',
                       borderRadius: '8px',
                       fontSize: '14px',
-                      cursor: 'pointer'
+                      cursor: loading ? 'not-allowed' : 'pointer'
                     }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#f9fafb'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
+                    onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = '#f9fafb')}
+                    onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = 'white')}
                   >
-                    Mark Next 7 Days Available
+                    {loading ? 'Processing...' : 'Mark Next 7 Days Available'}
                   </button>
                   <button 
                     onClick={blockWeekend}
+                    disabled={loading}
                     style={{
                       width: '100%',
                       padding: '8px 12px',
@@ -363,12 +511,12 @@ const AvailabilityView = () => {
                       border: '1px solid #d1d5db',
                       borderRadius: '8px',
                       fontSize: '14px',
-                      cursor: 'pointer'
+                      cursor: loading ? 'not-allowed' : 'pointer'
                     }}
-                    onMouseEnter={(e) => e.target.style.backgroundColor = '#f9fafb'}
-                    onMouseLeave={(e) => e.target.style.backgroundColor = 'white'}
+                    onMouseEnter={(e) => !loading && (e.target.style.backgroundColor = '#f9fafb')}
+                    onMouseLeave={(e) => !loading && (e.target.style.backgroundColor = 'white')}
                   >
-                    Block Upcoming Weekend
+                    {loading ? 'Processing...' : 'Block Upcoming Weekend'}
                   </button>
                 </div>
               </div>

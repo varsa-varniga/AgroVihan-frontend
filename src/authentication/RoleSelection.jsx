@@ -49,7 +49,7 @@ export default function RoleSelection() {
         </button>
 
         <button
-          onClick={() => navigate("/sprouter")}
+          onClick={() => navigate("/cultivator")}
           style={{
             width: "100%",
             padding: "12px",

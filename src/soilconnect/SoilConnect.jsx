@@ -4,8 +4,10 @@ import {
   createTheme, 
   CssBaseline, 
   Box,
-  Drawer
+  Drawer,
+  IconButton
 } from '@mui/material';
+import { ArrowBack } from '@mui/icons-material';
 
 // Import all components
 import Dashboard from './components/Dashboard';
@@ -92,20 +94,34 @@ const SoilConnect = () => {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       
-      {/* Main Container - Fixed Height */}
+      {/* Main Container - Full Viewport Height */}
       <Box sx={{ 
-        width: '100%',
-        height: '550px', // Fixed height - no empty space
+        width: '100vw',
+        height: '100vh',
         backgroundColor: 'white',
-        border: '1px solid #e0e0e0',
-        borderRadius: '8px',
-        marginTop: '20px',
-        marginBottom: '20px',
-        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
         display: 'flex',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        position: 'relative'
       }}>
-        {/* Sidebar - Fixed Height */}
+        {/* Back Button - Top Left */}
+        <IconButton
+          onClick={() => window.history.back()}
+          sx={{
+            position: 'absolute',
+            top: 16,
+            left: sidebarOpen ? drawerWidth + 16 : collapsedWidth + 16,
+            zIndex: 1000,
+            backgroundColor: 'white',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+            transition: 'left 0.3s ease',
+            '&:hover': {
+              backgroundColor: '#f5f5f5',
+            }
+          }}
+        >
+          <ArrowBack />
+        </IconButton>
+        {/* Sidebar - Full Height */}
         <Drawer
           variant="permanent"
           sx={{
@@ -118,10 +134,9 @@ const SoilConnect = () => {
               color: 'white',
               transition: 'width 0.3s ease',
               overflowX: 'hidden',
-              height: '800px', // Same as container
+              height: '100vh',
               position: 'relative',
-              border: 'none',
-              borderRadius: '8px 0 0 8px'
+              border: 'none'
             },
           }}
         >
@@ -133,16 +148,17 @@ const SoilConnect = () => {
           />
         </Drawer>
 
-        {/* Main Content Area - Fixed Height */}
+        {/* Main Content Area - Full Height */}
         <Box 
           sx={{ 
             flexGrow: 1,
-            p: 2,
+            p: 3,
+            pt: 8,
             width: `calc(100% - ${sidebarOpen ? drawerWidth : collapsedWidth}px)`,
             transition: 'width 0.3s ease',
-            height: '500px', // Fixed height
+            height: '100vh',
             backgroundColor: '#f8f9fa',
-            overflow: 'auto' // Scroll if content exceeds
+            overflow: 'auto'
           }}
         >
           {/* Render Current View Component */}

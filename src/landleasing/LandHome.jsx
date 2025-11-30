@@ -1,5 +1,5 @@
 import React from 'react';
-import { MapPin, Users, FileText, Shield, TrendingUp, Leaf } from 'lucide-react';
+import { MapPin, Users, FileText, Shield, TrendingUp, Leaf, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const styles = {
@@ -47,6 +47,21 @@ const styles = {
     fontSize: '1.5rem',
     fontWeight: 700,
     color: '#111827',
+  },
+  backButton: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.5rem',
+    padding: '0.5rem 1rem',
+    backgroundColor: 'white',
+    color: '#374151',
+    border: '1px solid #e5e7eb',
+    borderRadius: '0.375rem',
+    fontSize: '0.95rem',
+    fontWeight: 500,
+    cursor: 'pointer',
+    transition: 'all 0.3s ease',
+    boxShadow: '0 1px 2px rgba(0,0,0,0.05)',
   },
   hero: {
     padding: '6rem 1.5rem',
@@ -202,10 +217,30 @@ const LandHome = () => {
       {/* Navigation */}
       <nav style={styles.nav}>
         <div style={styles.navContent}>
-          <div style={styles.logo}>
-            <Leaf size={32} color="#16a34a" />
-            <span style={styles.logoText}>Agrovihan</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            {/* Back Button */}
+            <button
+              style={styles.backButton}
+              onClick={() => navigate(-1)}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = '#f3f4f6';
+                e.currentTarget.style.borderColor = '#d1d5db';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = 'white';
+                e.currentTarget.style.borderColor = '#e5e7eb';
+              }}
+            >
+              <ArrowLeft size={18} />
+              Back
+            </button>
+
+            <div style={styles.logo}>
+              <Leaf size={32} color="#16a34a" />
+              <span style={styles.logoText}>Agrovihan</span>
+            </div>
           </div>
+
           <div style={styles.navMenu}>
             {/* File Explorer Demo */}
             <a
