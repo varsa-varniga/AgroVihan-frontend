@@ -16,7 +16,7 @@ import {
   Instagram,
   Pinterest,
 } from "@mui/icons-material";
-import footerBg from "../assets/FooterBg.png";
+import footerBg from "../assets/Footerbg.png";
 
 const Footer = () => {
   return (
